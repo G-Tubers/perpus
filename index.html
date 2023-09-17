@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Table</title>
+    <style>
+        h2{
+           text-shadow: 4px 4px 8px rgb(0, 0, 0);
+           color: whitesmoke;
+        }
+        body{
+            background: linear-gradient(to bottom, green, blue);
+            min-height: 100vh;
+        }
+        h1{
+           text-shadow: 4px 4px 8px rgb(0, 0, 0);
+            text-align: center;
+            color: white;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+        tr button{
+            background-color: red;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        button {
+            width: auto;
+            height: 100%;
+            border-radius: 20px;
+            padding: 5px 10px;
+            background-color: #007bff;
+            color: rgb(0, 0, 0);
+            border: none;
+            cursor: pointer;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <section>
+        <ul>
+            <li><a href="index.html">catatan</a></li>
+            <li><a href="daftar buku.html">buku</a></li>
+    </section>
+    <h2>Perpus</h2>
+    <h1>data pengunjung perpus</h1>
+    <table id="userTable">
+        <tr>
+            <th>ID</th>
+            <th>nama peminjam</th>
+            <th>buku yang dipinjam</th>
+            <th>kelas</th>
+            <th>Action</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td contenteditable="true">test</td>
+            <td contenteditable="true">rahasia alam semesta</td>
+            <td contenteditable="true">9B</td>
+            <td><button onclick="removeRow(this)">Delete</button></td>
+        </tr>
+    </table>
+    <button onclick="addRow()">Add Table</button>
+    <button onclick="saveData()">Save Data</button>
+    <button onclick="getData()">Get Data</button>
+
+    <script>
+        function addRow() {
+            var table = document.getElementById("userTable");
+            var newRow = table.insertRow(table.rows.length);
+            var cell1 = newRow.insertCell(0);
+            var cell2 = newRow.insertCell(1);
+            var cell3 = newRow.insertCell(2);
+            var cell4 = newRow.insertCell(3);
+            var cell5 = newRow.insertCell(4);
+
+            cell1.innerHTML = table.rows.length - 1;
+            cell2.contentEditable = true;
+            cell3.contentEditable = true;
+            cell4.contentEditable = true;
+            cell5.innerHTML = '<button onclick="removeRow(this)">Delete</button>';
+        }
+
+        function removeRow(button) {
+            var row = button.parentNode.parentNode;
+            row.parentNode.removeChild(row);
+        }
+
+        function saveData() {
+            var tableData = [];
+            var table = document.getElementById("userTable");
+            for (var i = 1; i < table.rows.length; i++) {
+                var row = table.rows[i];
+                var rowData = {
+                    id: row.cells[0].innerText,
+                    name: row.cells[1].innerText,
+                    email: row.cells[2].innerText,
+                    role: row.cells[3].innerText,
+                };
+                tableData.push(rowData);
+            }
+            localStorage.setItem("tableData", JSON.stringify(tableData));
+        }
+
+        function getData() {
+            var storedData = localStorage.getItem("tableData");
+            if (storedData) {
+                var tableData = JSON.parse(storedData);
+                var table = document.getElementById("userTable");
+                table.innerHTML = "<tr><th>ID</th><th>nama peminjam</th><th>buku yang dipinjam</th><th>kelas</th><th>Action</th></tr>";
+                for (var i = 0; i < tableData.length; i++) {
+                    var newRow = table.insertRow(table.rows.length);
+                    var cell1 = newRow.insertCell(0);
+                    var cell2 = newRow.insertCell(1);
+                    var cell3 = newRow.insertCell(2);
+                    var cell4 = newRow.insertCell(3);
+                    var cell5 = newRow.insertCell(4);
+                    cell1.innerHTML = tableData[i].id;
+                    cell2.innerHTML = tableData[i].name;
+                    cell3.innerHTML = tableData[i].email;
+                    cell4.innerHTML = tableData[i].role;
+                    cell2.contentEditable = true;
+                    cell3.contentEditable = true;
+                    cell4.contentEditable = true;
+                    cell5.innerHTML = '<button onclick="removeRow(this)">Delete</button>';
+                }
+            }
+        }
+    </script>
+</body>
+</html>

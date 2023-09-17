@@ -1,0 +1,140 @@
+<html>
+<head>
+    <title>Upload Gambar & Deskripsi</title>
+</head>
+<body>
+    <section>
+        <ul>
+            <li><a href="index.html">catatan</a></li>
+            <li><a href="daftar buku.html">buku</a></li>
+    </section>
+    <input type="file" id="imageInput" accept="image/*">
+    <textarea id="descriptionInput" cols="30" rows="10" placeholder="Deskripsi"></textarea>
+    <button onclick="uploadImage()">Upload</button>
+
+    <div id="imagePreview"></div>
+    <ul id="imageList"></ul>
+
+    <script>
+        function uploadImage() {
+            const imageInput = document.getElementById('imageInput');
+            const descriptionInput = document.getElementById('descriptionInput');
+            const imageList = document.getElementById('imageList');
+
+            const file = imageInput.files[0];
+            const description = descriptionInput.value;
+
+            if (file && description) {
+                // Buat elemen gambar untuk tampilan pratinjau
+                const imageElement = document.createElement('img');
+                imageElement.src = URL.createObjectURL(file);
+                imageElement.alt = description;
+                imageElement.style.maxWidth = '200px';
+
+                // Tambahkan elemen gambar ke tampilan pratinjau
+
+                // Simpan data ke localStorage
+                const imageData = {
+                    src: imageElement.src,
+                    description: description
+                };
+
+                // Periksa apakah ada data sebelumnya di localStorage
+                let existingData = localStorage.getItem('imageData');
+                existingData = existingData ? JSON.parse(existingData) : [];
+
+                // Tambahkan data baru ke array
+                existingData.push(imageData);
+
+                // Simpan data baru ke localStorage
+                localStorage.setItem('imageData', JSON.stringify(existingData));
+
+                // Tampilkan daftar gambar dan deskripsi yang telah diupload
+                displayImages(existingData);
+
+                // Bersihkan input
+                imageInput.value = '';
+                descriptionInput.value = '';
+            } else {
+                alert('Silakan pilih gambar dan masukkan deskripsi.');
+            }
+        }
+
+        function displayImages(data) {
+            const imageList = document.getElementById('imageList');
+            imageList.innerHTML = '';
+
+            data.forEach((item, index) => {
+                const listItem = document.createElement('div');
+                listItem.innerHTML = `<img src="${item.src}" alt="${item.description}" style="max-width: 100px;"> 
+                                      ${item.description}
+                                      <button onclick="deleteImage(${index})">Hapus</button>`;
+                imageList.appendChild(listItem);
+            });
+        }
+
+        function deleteImage(index) {
+            const existingData = JSON.parse(localStorage.getItem('imageData'));
+            existingData.splice(index, 1);
+            localStorage.setItem('imageData', JSON.stringify(existingData));
+            displayImages(existingData);
+        }
+
+        // Tampilkan daftar gambar yang telah diupload saat halaman dimuat
+        const initialData = localStorage.getItem('imageData');
+        if (initialData) {
+            displayImages(JSON.parse(initialData));
+        }
+    </script>
+</body>
+<style>
+    div{
+        color: blue;
+	font-family: 'Dancing Script', cursive;
+    font-size: 15px;
+    }
+  body{
+    background-color:black;
+  }
+h1{
+            color: white;
+            text-transform: uppercase;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 1);
+            animation: neon-glow 1s infinite alternate;
+}
+input,textarea,div img,button
+{
+	          font-family: 'Dancing Script', cursive;
+            display: inline-block;
+            padding: 10px 20px;
+            text-transform: uppercase;
+            text-align:center;
+            background-color: #000;
+            color: #fff;
+            border: 2px solid #00ff00;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            cursor: pointer;
+            animation: neonBox-glow 4s infinite alternate;
+}
+
+        @keyframes neon-glow {
+            0% {
+                text-shadow: 0 0 10px rgba(0, 255, 0, 1);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
+            }
+        }
+
+        @keyframes neonBox-glow {
+            0% {
+                box-shadow: 0 0 6px rgba(0, 255, 0, 1);
+            }
+            100% {
+                box-shadow: 0 0 12px rgba(0, 255, 0, 0.5);
+            }
+        }
+</style>
+</html>
