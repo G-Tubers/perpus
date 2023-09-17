@@ -16,75 +16,28 @@
     <ul id="imageList"></ul>
 
     <script>
+
         function uploadImage() {
-            const imageInput = document.getElementById('imageInput');
-            const descriptionInput = document.getElementById('descriptionInput');
-            const imageList = document.getElementById('imageList');
+		const inputElement = document.getElementById('imageInput'); // Replace 'imageInput' with the actual ID of your input element
+inputElement.addEventListener('change', function() {
+  const file = inputElement.files[0];
+  const reader = new FileReader();
+  
+  reader.onload = function(e) {
+	  const imgElement = document.createElement('img');
+imgElement.src = imageDataURL;
+document.body.appendChild(imgElement); // Append the image to the DOM
 
-            const file = imageInput.files[0];
-            const description = descriptionInput.value;
+    const imageDataURL = e.target.result;
+    
+    // Save the image data URL to local storage
+    localStorage.setItem('imageData', imageDataURL);
+  };
+  const imageDataURL = localStorage.getItem('imageData');
+  reader.readAsDataURL(file);
+});
 
-            if (file && description) {
-                // Buat elemen gambar untuk tampilan pratinjau
-                const imageElement = document.createElement('img');
-                imageElement.src = URL.createObjectURL(file);
-                imageElement.alt = description;
-                imageElement.style.maxWidth = '200px';
 
-                // Tambahkan elemen gambar ke tampilan pratinjau
-
-                // Simpan data ke localStorage
-                const imageData = {
-                    src: imageElement.src,
-                    description: description
-                };
-
-                // Periksa apakah ada data sebelumnya di localStorage
-                let existingData = localStorage.getItem('imageData');
-                existingData = existingData ? JSON.parse(existingData) : [];
-
-                // Tambahkan data baru ke array
-                existingData.push(imageData);
-
-                // Simpan data baru ke localStorage
-                localStorage.setItem('imageData', JSON.stringify(existingData));
-
-                // Tampilkan daftar gambar dan deskripsi yang telah diupload
-                displayImages(existingData);
-
-                // Bersihkan input
-                imageInput.value = '';
-                descriptionInput.value = '';
-            } else {
-                alert('Silakan pilih gambar dan masukkan deskripsi.');
-            }
-        }
-
-        function displayImages(data) {
-            const imageList = document.getElementById('imageList');
-            imageList.innerHTML = '';
-
-            data.forEach((item, index) => {
-                const listItem = document.createElement('div');
-                listItem.innerHTML = `<img src="${item.src}" alt="${item.description}" style="max-width: 100px;"> 
-                                      ${item.description}
-                                      <button onclick="deleteImage(${index})">Hapus</button>`;
-                imageList.appendChild(listItem);
-            });
-        }
-
-        function deleteImage(index) {
-            const existingData = JSON.parse(localStorage.getItem('imageData'));
-            existingData.splice(index, 1);
-            localStorage.setItem('imageData', JSON.stringify(existingData));
-            displayImages(existingData);
-        }
-
-        // Tampilkan daftar gambar yang telah diupload saat halaman dimuat
-        const initialData = localStorage.getItem('imageData');
-        if (initialData) {
-            displayImages(JSON.parse(initialData));
-        }
     </script>
 </body>
 <style>
